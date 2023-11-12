@@ -1,5 +1,7 @@
 // Import the required modules
-const express = require('express');
+import express from 'express';
+
+// ...
 const mongoose = require('mongoose');
 
 // Create an Express application

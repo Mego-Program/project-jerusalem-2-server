@@ -1,24 +1,15 @@
-// Import the required modules
-const express = require('express');
+import express from 'express';
+import dotenv from 'dotenv';
 
-// Create an Express application
+dotenv.config();
+
 const app = express();
+const PORT = process.env.PORT || 3000;
 
-// Define the port to listen on
-const port = 3000;
-
-// Start the Express server
-app.listen(port, () => {
-    console.log(`Server is running on port ${port}`);
+app.get('/', (req, res) => {
+  res.send('Hello, Jerusalem!');
 });
 
-// Define a route to retrieve mocked data
-app.get('/api/data', (req, res) => {
-    // Simulated data (replace with actual database queries)
-    const mockedData = [
-        { id: 1, name: 'Item 1' },
-        { id: 2, name: 'Item 2' },
-        // Add more data here
-    ];
-    res.json(mockedData);
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
 });

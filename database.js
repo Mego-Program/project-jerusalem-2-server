@@ -1,54 +1,20 @@
-// Import the required modules
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
+import dotenv from 'dotenv';
 
-// Define the schema for the data using Mongoose
-const itemSchema = new mongoose.Schema({
-    name: String,
-    description: String,
-});
+dotenv.config();
 
-// Create a Mongoose model based on the schema
-const Item = mongoose.model('Item', itemSchema);
-
-// Connect to the MongoDB database
-mongoose.connect('mongodb+srv://tzvi-shtesman:A@a1a1a1@cluster0.fptyoym.mongodb.net/', {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-});
-
-// Database connection error handling
-const db = mongoose.connection;
-db.on('error', console.error.bind(console, 'connection error:'));
-db.once('open', function () {
+mongoose.connect(process.env.MONGO_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+})
+  .then(() => {
     console.log('Connected to MongoDB');
-});
+    // כאן תוכל להמשיך עם הפעולות שלך
+  })
+  .catch((error) => {
+    console.error('Error connecting to MongoDB:', error);
+  });
 
-// Define a function to check if an item exists in the database and add it if it doesn't
-const checkAndAddItem = (itemName, itemDescription) => {
-    // Check if an item with the same name already exists
-    Item.findOne({ name: itemName }, (err, existingItem) => {
-        if (err) {
-            console.error('Error:', err);
-            return;
-        }
+const db = mongoose.connection;
 
-        if (existingItem) {
-            console.log('Item already exists:', existingItem);
-        } else {
-            // Create a new item
-            const newItem = new Item({
-                name: itemName,
-                description: itemDescription,
-            });
-
-            // Save the new item to the database
-            newItem.save((saveErr, savedItem) => {
-                if (saveErr) {
-                    console.error('Error:', saveErr);
-                } else {
-                    console.log('New item added:', savedItem);
-                }
-            });
-        }
-    });
-};
+// תמיד כדאי להוסיף טיפול בארורים בכל התחברות או פעולה במסד הנתונ
