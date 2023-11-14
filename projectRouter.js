@@ -9,21 +9,21 @@ const router = express.Router();
 
 // Dynamic route that takes the project name as a parameter
 router.get('/:projectName', async (req, res) => {
-  const  projectName  = req.params;
-  console.log(projectName.projectName);
+  const  {projectName}  = req.params;
   try {
-    const projects = await findProject(projectName.projectName).find();
+    const projects = await findProject(projectName).find();
     res.json(projects);
-  } catch (error) {
-    res.status(500).json({ error: 'Internal Server Error' });
+  }catch (error) {
+    console.error('Error adding new project:', error);
+    res.status(500).json({ error: 'Internal Server Error', details: error.message });
+  
+  
   }
 });
 
 
-
   router.post('/addNewProject', async (req, res) => {
     const { name } = req.body;
-    console.log(name);
     try {
       // Assuming 'findProject' returns the appropriate model for the project
       const newProject = new Project({ name, items: [] });
