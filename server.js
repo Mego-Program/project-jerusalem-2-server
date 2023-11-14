@@ -18,18 +18,18 @@ app.use(express.json());
 // ודא שיש לך קריאה לפונקציה use כזו וגם שהנתיב נכון
 app.use('/projects', projectRouter);
 
+
 mongoose.connect(process.env.MONGO_URI, {
-  useUnifiedTopology: true
-})
-  .then(() => {
-    console.log('Connected to MongoDB');
-  })
-  .catch((error) => {
-    console.error('Error connecting to MongoDB:', error);
-  });
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
 
 const db = mongoose.connection;
 
+db.on('error', console.error.bind(console, 'MongoDB connection error:'));
+db.once('open', () => {
+  console.log('Connected to MongoDB');
+});
 
 
 
