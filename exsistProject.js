@@ -1,5 +1,6 @@
 // models/project.js
 import mongoose from 'mongoose';
+function findProject(name){
 
 const projectSchema = new mongoose.Schema({
   name: {
@@ -13,8 +14,8 @@ const projectSchema = new mongoose.Schema({
   },
 });
 
-
-const Project = mongoose.model('Project2', projectSchema)
-
-export default Project 
+const Project = mongoose.model(name, projectSchema)
+return Project
+}
+export default findProject
 
