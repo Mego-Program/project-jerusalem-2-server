@@ -3,6 +3,7 @@ import express from 'express';
 import cors from 'cors';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
+import missionsRouter from './missionsRouter.js'
 import projectRouter from './projectRouter.js'; // ודא שהנתיב נכון
 
 dotenv.config();
@@ -17,7 +18,7 @@ app.use(express.json());
 
 // ודא שיש לך קריאה לפונקציה use כזו וגם שהנתיב נכון
 app.use('/projects', projectRouter);
-
+app.use('/changeMission', missionsRouter);
 
 mongoose.connect(process.env.MONGO_URI, {
   useNewUrlParser: true,
