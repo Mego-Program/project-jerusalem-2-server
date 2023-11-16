@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "main": "server.js",
+  "engines": "18.x",
   "type": "module",
   "scripts": {
     "start": "node server.js",
