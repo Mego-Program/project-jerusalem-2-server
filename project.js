@@ -7,11 +7,14 @@ const projectSchema = new mongoose.Schema({
     required: true,
   },
   description: {
-    type: String,
-    required: true,
+      type: Array,
+      required: true,
+      default:[],
   },
 });
 
-const Project = mongoose.model('Project', projectSchema);
 
-export default Project;
+const Project = mongoose.model('Project2', projectSchema)
+
+export default Project 
+
