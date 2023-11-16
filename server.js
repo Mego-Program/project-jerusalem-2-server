@@ -13,7 +13,6 @@ const PORT = process.env.PORT || 3000;
 app.use(cors({
   origin: process.env.CORS_ORIGIN || 'https://project-jerusalem-2.vercel.app',
   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-  credentials: true,
 }));
 
 app.use(express.json());
