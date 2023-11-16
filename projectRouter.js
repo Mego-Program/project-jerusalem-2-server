@@ -35,17 +35,37 @@ router.get('/listOfProjects', async (req, res) => {
     res.status(500).json({ error: 'Internal Server Error', details: error.message });
   }
 });
+// post request to add new mission 
+router.post('/addMission/:collection',async(req,res)=>{
+  const collection = req.params
+  const newMission = req.body
+  newMission['projectName']=collection.collection
+try{
+   const mission = new Project(newMission)
+   const savedMission = await mission.save();
+
+    res.json(savedMission);
+  } catch (error) {
+    console.error('Error adding mission:', error);
+    res.status(500).json({ error: 'Internal Server Error', details: error.message });
+  }
+
+})
+
+
 // post request to update mission fields
 router.post('/post/:collectionName/:field', async (req, res) => {
   const { collectionName, field } = req.params;
   const { id, update } = req.body;
 try{
-  const current = await Project.findOne({id:id,projectName:collectionName})
+  const current = await Project.findOne({_id:id,projectName:collectionName})
+  console.log(current._id);
   const updatedMission = await Project.findOneAndUpdate(
-    { id: id ,projectName:collectionName},
+    { _id:id,projectName:collectionName},
     { $set: { [field]: update} },
     { new: true } 
   );
+  console.log(updatedMission._id);
   if (current[field]===updatedMission[field]){res.send(updatedMission[field])}
   else{
   if (!updatedMission) {

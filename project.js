@@ -2,7 +2,6 @@ import mongoose from 'mongoose';
 
 const projectSchema = new mongoose.Schema({
   projectName:String,
-      id: String,
       pic: String,
       man_in_charge: String,
       header: String,
