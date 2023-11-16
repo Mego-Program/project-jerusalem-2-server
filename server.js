@@ -11,7 +11,11 @@ console.log(process.env.PORT);
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-app.use(cors());
+app.use(cors({
+  origin: 'https://project-jerusalem-2.vercel.app', // או את כתובת המקור שלך
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  credentials: true,
+}));
 app.use(express.json());
 
 
