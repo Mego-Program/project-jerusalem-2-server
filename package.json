@@ -2,7 +2,7 @@
   "name": "project-server-jerusalem-2",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "server.js",
   "type": "module",
   "scripts": {
     "start": "node server.js",
