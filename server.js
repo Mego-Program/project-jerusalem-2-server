@@ -19,7 +19,6 @@ app.use(cors({
 app.use(express.json());
 
 
-
 // ודא שיש לך קריאה לפונקציה use כזו וגם שהנתיב נכון
 app.use('/projects', projectRouter);
 app.use('/changeMission', missionsRouter);
