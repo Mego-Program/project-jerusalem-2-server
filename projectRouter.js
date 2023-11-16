@@ -1,10 +1,25 @@
 // routes/projectRouter.js
-import { json } from 'express';
 import express  from 'express';
 import mongoose from 'mongoose';
 
 
 const router = express.Router();
+
+router.post('/addNewProject', async (req, res) => {
+  const { name } = req.body;
+  try {
+    // Assuming 'findProject' returns the appropriate model for the project
+    const newProject = new Project({ name, items: [] });
+    const savedProject = await newProject.save();
+    res.status(201).json(savedProject);
+  } catch (error) {
+    console.error('Error adding new project:', error);
+    res.status(500).json({ error: 'Internal Server Error', details: error.message });
+  }
+
+});
+
+
 // get request to send the all boards exsisting
 router.get('/listOfProjects', async (req, res) => {
   try {
@@ -70,20 +85,7 @@ router.get('/:projectName', async (req, res) => {
 });
 
 
-  router.post('/addNewProject', async (req, res) => {
-    const { name } = req.body;
-    try {
-      // Assuming 'findProject' returns the appropriate model for the project
-      const newProject = new Project({ name, items: [] });
-      const savedProject = await newProject.save();
-      res.status(201).json(savedProject);
-    } catch (error) {
-      console.error('Error adding new project:', error);
-      res.status(500).json({ error: 'Internal Server Error', details: error.message });
-    }
-  
-});
-
+ 
 
 
 
