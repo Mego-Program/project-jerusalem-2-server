@@ -10,7 +10,7 @@ console.log(process.env.PORT);
 const app = express();
 const PORT = process.env.PORT || 3000;
 app.use(cors({
-  origin: process.env.CORS_ORIGIN || 'https://project-jerusalem-2.vercel.app',
+  origin: ['https://project-jerusalem-2.vercel.app','http://localhost:5173'],
   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
 }));
 
