@@ -1,15 +1,32 @@
 {
-    "version": 2,
-    "builds": [
-      {
-        "src": "./index.js",
-        "use": "@vercel/node"
-      }
-    ],
-    "routes": [
-      {
-        "src": "/(.*)",
-        "dest": "/"
-      }
-    ]
+  "version": 2,
+  "builds": [
+    {
+      "src": "./index.js",
+      "use": "@vercel/node"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/projects/(.*)",
+      "dest": "/projects/$1",
+      "methods": ["GET", "POST", "PUT", "DELETE"]
+    },
+    {
+      "src": "/changeMission/(.*)",
+      "dest": "/changeMission/$1",
+      "methods": ["GET", "POST", "PUT", "DELETE"]
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/$1"
+    }
+  ],
+  "server": {
+    "cors": {
+      "origin": "https://project-jerusalem-2.vercel.app",
+      "methods": ["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE"],
+      "credentials": true
+    }
   }
+}
