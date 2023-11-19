@@ -34,6 +34,37 @@ router.get('/listOfProjects', async (req, res) => {
     res.status(500).json({ error: 'Internal Server Error', details: error.message });
   }
 });
+// get request to get all names exsist
+
+router.get('/names',async (req,res)=>{
+  try{
+  const response = await Project.find()
+  const names = [... new Set(response.map((obj) => ({ id: obj._id, name: obj.assignee })))]
+  res.send(names)
+  }catch(err){console.log('error while trying to get names ',(err));
+res.status(500).json({err:'interval server error',details:err.message})}
+})
+// post request to delete mission
+router.post('/delete/:projectName',async(req,res)=>{
+  const {id} = req.body
+  const projName = req.params.projectName
+  try{
+  if (!id || !projName) {
+    return res.status(400).json({ error: 'Missing required parameters.' });
+  }
+  const missionToDelete = await Project.findOne({ _id: id, projectName: projName });
+  if (!missionToDelete) {
+    return res.status(404).json({ error: 'Mission not found.' });
+  }
+  await missionToDelete.deleteOne();
+  return res.status(200).json({ message: 'Mission deleted successfully.' });
+} catch (error) {
+  console.error(error);
+  return res.status(500).json({ error: 'Internal Server Error.' });
+}
+})
+
+
 // post request to add new mission 
 router.post('/addMission/:collection',async(req,res)=>{
   const collection = req.params
@@ -58,13 +89,11 @@ router.post('/post/:collectionName/:field', async (req, res) => {
   const { id, update } = req.body;
 try{
   const current = await Project.findOne({_id:id,projectName:collectionName})
-  console.log(current._id);
   const updatedMission = await Project.findOneAndUpdate(
     { _id:id,projectName:collectionName},
     { $set: { [field]: update} },
     { new: true } 
   );
-  console.log(updatedMission._id);
   if (current[field]===updatedMission[field]){res.send(updatedMission[field])}
   else{
   if (!updatedMission) {
