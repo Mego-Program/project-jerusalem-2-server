@@ -8,21 +8,22 @@ const router = express.Router();
 
 
 
-router.post('/addNewProject', async (req, res) => {
-  const { name } = req.body;
-  try {
-    
-    const newProject = new Project({ name, items: [] });
-    const savedProject = await newProject.save();
-    res.status(201).json(savedProject);
-  } catch (error) {
-    console.error('Error adding new project:', error);
-    res.status(500).json({ error: 'Internal Server Error', details: error.message });
-  }
 
-});
-
-
+  router.post('/addNewProject', async (req, res) => {
+    const { name, persons } = req.body
+    try {
+      const newProject = new ProjectNames({
+       name:name,
+        assigneeList:persons
+      });
+      const savedProject = await newProject.save();
+      res.status(201).json(savedProject);
+    } catch (error) {
+      console.error('Error adding new project:', error);
+      res.status(500).json({ error: 'Internal Server Error', details: error.message });
+    }
+  });
+  
 
 router.get('/listOfProjects', async (req, res) => {
   try {
