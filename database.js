@@ -10,12 +10,10 @@ mongoose.connect(process.env.MONGO_URI, {
 })
   .then(() => {
     console.log('Connected to MongoDB');
-    // כאן תוכל להמשיך עם הפעולות שלך
+    
   })
   .catch((error) => {
     console.error('Error connecting to MongoDB:', error);
   });
   
 const db = mongoose.connection;
-
-// תמיד כדאי להוסיף טיפול בארורים בכל התחברות או פעולה במסד הנתונ

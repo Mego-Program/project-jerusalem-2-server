@@ -1,4 +1,3 @@
-// routes/projectRouter.js
 import express  from 'express';
 import mongoose from 'mongoose';
 import Project from './project.js';
@@ -12,7 +11,7 @@ const router = express.Router();
 router.post('/addNewProject', async (req, res) => {
   const { name } = req.body;
   try {
-    // Assuming 'findProject' returns the appropriate model for the project
+    
     const newProject = new Project({ name, items: [] });
     const savedProject = await newProject.save();
     res.status(201).json(savedProject);
@@ -24,7 +23,7 @@ router.post('/addNewProject', async (req, res) => {
 });
 
 
-// get request to send the all boards exsisting 
+
 router.get('/listOfProjects', async (req, res) => {
   try {
     const list = await ProjectNames.find()
@@ -34,17 +33,17 @@ router.get('/listOfProjects', async (req, res) => {
     res.status(500).json({ error: 'Internal Server Error', details: error.message });
   }
 });
-// get request to get all names exsist
 
-router.get('/names',async (req,res)=>{
+
+router.get('/names/:projectName',async (req,res)=>{
+  const projName = req.params.projectName
   try{
-  const response = await Project.find()
-  const names = [... new Set(response.map((obj) => ({ id: obj._id, name: obj.assignee })))]
-  res.send(names)
+  const response = await ProjectNames.findOne({name:projName})
+  res.send(response.assigneeList)
   }catch(err){console.log('error while trying to get names ',(err));
 res.status(500).json({err:'interval server error',details:err.message})}
 })
-// post request to delete mission
+
 router.post('/delete/:projectName',async(req,res)=>{
   const {id} = req.body
   const projName = req.params.projectName
@@ -65,7 +64,7 @@ router.post('/delete/:projectName',async(req,res)=>{
 })
 
 
-// post request to add new mission 
+
 router.post('/addMission/:collection',async(req,res)=>{
   const collection = req.params
   const newMission = req.body
@@ -83,7 +82,7 @@ try{
 })
 
 
-// post request to update mission fields
+
 router.post('/post/:collectionName/:field', async (req, res) => {
   const { collectionName, field } = req.params;
   const { id, update } = req.body;
@@ -104,7 +103,7 @@ try{
 })
 
 
-// get request to get all the missions by board name
+
 router.get('/:projectName', async (req, res) => {
   const { projectName } = req.params;
 

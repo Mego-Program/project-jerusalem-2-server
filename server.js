@@ -1,9 +1,9 @@
-// server.js
+
 import express from 'express';
 import cors from 'cors';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
-import projectRouter from './projectRouter.js'; // ודא שהנתיב נכון
+import projectRouter from './projectRouter.js'; 
 
 dotenv.config();
 console.log(process.env.PORT);
@@ -16,7 +16,7 @@ app.use(cors({
 
 app.use(express.json());
 
-// ודא שיש לך קריאה לפונקציה use כזו וגם שהנתיב נכון
+
 app.use('/projects', projectRouter);
 
 mongoose.connect(process.env.MONGO_URI, {
@@ -34,4 +34,3 @@ db.once('open', () => {
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
-
