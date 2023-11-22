@@ -6,15 +6,12 @@ import ProjectNames from './listProjects.js';
 
 const router = express.Router();
 
-
-
-
   router.post('/addNewProject', async (req, res) => {
-    const { name, persons } = req.body
+    const { name, names } = req.body
     try {
       const newProject = new ProjectNames({
        name:name,
-        assigneeList:persons
+        assigneeList:names
       });
       const savedProject = await newProject.save();
       res.status(201).json(savedProject);
@@ -34,6 +31,24 @@ router.get('/listOfProjects', async (req, res) => {
     res.status(500).json({ error: 'Internal Server Error', details: error.message });
   }
 });
+// change it to get real names from infra
+router.get('/allNames', async (req,res)=>{
+  const names =  [{
+    name:'Lily',
+    pic:''},
+    {name:'Peter',
+    pic:''},
+    {name:'Grace',
+    pic:''},
+    {name:'Alice',
+    pic:''},
+    {name:'Jack',
+    pic:''},]
+    try{
+      res.send(names)
+    }
+    catch(err){console.log('error getting names:',err);}
+})
 
 
 router.get('/names/:projectName',async (req,res)=>{
@@ -64,12 +79,33 @@ router.post('/delete/:projectName',async(req,res)=>{
 }
 })
 
+router.post('/deleteProject', async (req,res)=>{
+  const {projectName} = req.body
+  try{
+    const missionsToDelete = await Project.find({projectName:projectName})
+  const projectToDelete  =await ProjectNames.findOne({name:projectName})
+
+if(missionsToDelete.length>0&&projectToDelete){
+  try{
+    await projectToDelete.deleteOne()
+
+   missionsToDelete.map(async(mission)=> {await mission.deleteOne()})
+  }catch(error){console.log(`error while find project and missions to delete, ${projectName}:${error}`);}}
+  else if(!projectToDelete){console.log('no project found');}
+else if(missionsToDelete.length===0&&projectToDelete){
+  try{
+  await projectToDelete.deleteOne()}catch(error){console.log('error delete empty project:',error);}
+}
+  }catch(err){console.log('error try to delete the full project ');}
+})
+
 
 
 router.post('/addMission/:collection',async(req,res)=>{
   const collection = req.params
   const newMission = req.body
   newMission['projectName']=collection.collection
+  newMission['assignee']={name:'',pic:''}
 try{
    const mission = new Project(newMission)
    const savedMission = await mission.save();
@@ -100,7 +136,7 @@ try{
     return res.status(404).json({ error: 'Mission not found', details: `No mission with the specified id` });
   }
   res.json(updatedMission);}
-}catch(err){console.log('error while update mission',(err));}
+}catch(err){res.send('error try again'),console.log('error while update mission',(err));}
 })
 
 
