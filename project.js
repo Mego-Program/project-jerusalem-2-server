@@ -9,7 +9,10 @@ const projectSchema = new mongoose.Schema({
       deadline: String,
       status: String,
       category: String,
-      assignee: String,
+      assignee: {
+        name: { type: String, default: '' },
+        pic: { type: String, default: '' }
+      },
       milestone: String,
       issue_type: String,
   });
