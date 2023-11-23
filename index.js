@@ -5,6 +5,7 @@ import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import projectRouter from './projectRouter.js'; 
 import missionRouter from './missionsRouter.js';
+import specRouter from './specRouter.js';
 
 dotenv.config();
 console.log(process.env.PORT);
@@ -17,7 +18,7 @@ app.use(cors({
 
 
 app.use(express.json());
-
+app.use('/spec', specRouter);
 app.use('/missions',missionRouter)
 app.use('/projects', projectRouter);
 
