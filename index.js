@@ -15,6 +15,7 @@ app.use(cors({
   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
 }));
 
+
 app.use(express.json());
 
 app.use('/missions',missionRouter)
