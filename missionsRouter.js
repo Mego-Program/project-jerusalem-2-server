@@ -22,10 +22,11 @@ missionRouter.get('/:projectName', async (req, res) => {
         }
   });
 
-  
+
 missionRouter.post('/:projectname',async(req,res)=>{
     const {projectname} = req.params
     const newMission = req.body
+    if(projectname==='no project found'){res.send('create project first')}{
     newMission['projectName']=projectname
     newMission['assignee']={name:'',pic:''}
   try{
@@ -36,7 +37,7 @@ missionRouter.post('/:projectname',async(req,res)=>{
     } catch (error) {
       console.error('Error adding mission:', error);
       res.status(500).json({ error: 'Internal Server Error', details: error.message });
-    }
+    }}
   
   })
 
