@@ -26,6 +26,10 @@ missionRouter.get('/:projectName', async (req, res) => {
 missionRouter.post('/:projectname',async(req,res)=>{
     const {projectname} = req.params
     const newMission = req.body
+    for (const key in obj) {
+      if (obj[key] !== undefined && obj[key] !== null && obj[key] !== '') {break}
+      res.send('invalid message');return 
+    }
     if(projectname==='no project found'){res.send('create project first')}{
     newMission['projectName']=projectname
     newMission['assignee']={name:'',pic:''}
@@ -44,6 +48,9 @@ missionRouter.post('/:projectname',async(req,res)=>{
   missionRouter.put('/:projectname/:field', async (req, res) => {
     const { projectname, field } = req.params;
     const { id, update } = req.body;
+    if(update===''||update===null){
+      res.send('invalid update');return
+    }
   try{
     const current = await Project.findOne({_id:id,projectName:projectname})
     const updatedMission = await Project.findOneAndUpdate(
