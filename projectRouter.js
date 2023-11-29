@@ -18,6 +18,7 @@ router.get('/listofprojects', async (req, res) => {
 
   router.post('/', async (req, res) => {
     const { name, names } = req.body
+    if (name===''){res.send('cant create empty name');return}
     try {
       const newProject = new ProjectNames({
        name:name,
@@ -38,12 +39,12 @@ router.get('/listofprojects', async (req, res) => {
       const newnames = [...oldNmaes.assigneeList, ...namesToAdd].filter((name)=>!namesToRemove.some(
         (person)=> person.pic === name.pic && person.name === name.name
       ))
-          const updatedBoard = await ProjectNames.findOneAndUpdate(
-            { name:projectName},
-            input!==''?{ $set: { assigneeList:newnames ,name:input} }:{ $set: { assigneeList:newnames} },
-            { new: true } )
-          if(input!==''){
-        const updatedMissions = await Project.updateMany({projectName:projectName},{projectName:input});}
+  const updatedBoard = await ProjectNames.findOneAndUpdate(
+  { name:projectName},
+  input!==''?{ $set: { assigneeList:newnames ,name:input} }:{ $set: { assigneeList:newnames} },
+  { new: true } )
+  if(input!==''){
+  const updatedMissions = await Project.updateMany({projectName:projectName},{projectName:input});}
         res.status(200).json('edit sucsses')
     }catch(err){console.log('server error while edit board:',err);}
   })
