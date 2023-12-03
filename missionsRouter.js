@@ -26,13 +26,12 @@ missionRouter.get('/:projectName', async (req, res) => {
 missionRouter.post('/:projectname',async(req,res)=>{
     const {projectname} = req.params
     const newMission = req.body
-    for (const key in obj) {
-      if (obj[key] !== undefined && obj[key] !== null && obj[key] !== '') {break}
+    for (const key in newMission) {
+      if (newMission[key] !== undefined && newMission[key] !== null && newMission[key] !== '') {break}
       res.send('invalid message');return 
     }
     if(projectname==='no project found'){res.send('create project first')}{
     newMission['projectName']=projectname
-    newMission['assignee']={name:'',pic:''}
   try{
      const mission = new Project(newMission)
      const savedMission = await mission.save();
@@ -72,10 +71,10 @@ missionRouter.delete('/:projectname',async(req,res)=>{
     const {id} = req.body
     const {projectname} = req.params
     try{
-    if (!id || !projName) {
+    if (!id || !projectname) {
       return res.status(400).json({ error: 'Missing required parameters.' });
     }
-    const missionToDelete = await Project.findOne({ _id: id, projectName: projectname });
+    const missionToDelete = await Project.findOne({ _id: id, projectName: projectname});
     if (!missionToDelete) {
       return res.status(404).json({ error: 'Mission not found.' });
     }
