@@ -1,23 +1,21 @@
 import mongoose from 'mongoose';
-
 const projectSchema = new mongoose.Schema({
-  projectName:String,
-      pic: String,
-      man_in_charge: String,
-      header: String,
-      content: String,
-      deadline: String,
-      status: String,
-      category: String,
-      assignee: {
-        name: { type: String, default: '' },
-        pic: { type: String, default: '' }
-      },
-      milestone: String,
-      issue_type: String,
-  });
+  isSpec: { type: Boolean, default: false }, 
+  projectName: { type: String, default: '' },
+  header: { type: String, default: '' },
+  content: { type: String, default: '' },
+  deadline: { type: String, default: '' },
+  status: { type: String, default: '' },
+  category: { type: String, default: '' },
+  assignee: {
+    name: { type: String, default: '' },
+    pic: { type: String, default: '' }
+  },
+  milestone: { type: String, default: '' },
+  issue_type: { type: String, default: '' },
+});
 
-const Project = mongoose.model('allmissions', projectSchema)
+const Project = mongoose.model('allmissions', projectSchema);
 
+export default Project;
 
-export default Project 
