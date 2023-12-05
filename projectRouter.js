@@ -7,8 +7,8 @@ import axios from 'axios';
 
 const router = express.Router();
 
-router.get('/listofprojects/', async (req, res) => {
-  const {userName} = req.query
+router.post('/listofprojects/', async (req, res) => {
+  const {userName} = req.body
   try {
 
       if(!userName){return}
