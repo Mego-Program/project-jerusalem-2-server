@@ -26,6 +26,9 @@ missionRouter.get('/:projectName', async (req, res) => {
 missionRouter.post('/:projectname',async(req,res)=>{
     const {projectname} = req.params
     const newMission = req.body
+    if(typeof(req.body)===Array){req.body.map((newM)=>addMassion(req,res))}
+    else{addMassion(req,res)}
+    async function addMassion(req,res){
     for (const key in newMission) {
       if (newMission[key] !== undefined && newMission[key] !== null && newMission[key] !== '') {break}
       res.send('invalid message');return 
@@ -40,7 +43,7 @@ missionRouter.post('/:projectname',async(req,res)=>{
     } catch (error) {
       console.error('Error adding mission:', error);
       res.status(500).json({ error: 'Internal Server Error', details: error.message });
-    }}
+    }}}
   
   })
 

@@ -13,7 +13,7 @@ router.post('/listofprojects/', async (req, res) => {
 
       if(!userName){return}
     const list = await ProjectNames.find()
-    const userList = list.filter((itm)=>itm.assigneeList.some((user)=>user.name===userName))
+    const userList = list.filter((itm)=>itm.assigneeList.some((user)=>user.name===userName)||itm.userInCharge===userName)
     res.send(userList.map((itm)=>itm.name))
   }catch (error) {
     console.log('Error getting list of project names:', error);
@@ -23,21 +23,25 @@ router.post('/listofprojects/', async (req, res) => {
 
 
   router.post('/', async (req, res) => {
-    let userName = null
-    const { name, names,specs } = req.body
+    const { name, names,specs ,userName} = req.body
+    let spec = specs
+    const specList = specs.map((spec)=>spec._id)
     if (name===''){res.send('cant create empty name');return}
-    try {
-    const token = req.headers.authorization;
-    if (!token) {res.status(403).send({ auth: false, message: 'No token provided.' });return}
-    jwt.verify(token, process.env.TOKEN_KEY, (err, decoded) => {
-      if (err) {res.status(500).send({ auth: false, message: 'Failed to authenticate token.' });return}
-    userName = decoded.userName})
-      if(!userName){return}
+   else if (!userName) {res.status(403).send({ auth: false, message: 'No token provided.' });return}
+    try{
+      const response = await axios.put('https://jlm-specs-2-server.vercel.app/project/link-board',{specId:specList ,
+      boardName:name})
+      if (response.status!=200) {
+        res.status(500).send('server error: cannot connect specs - ',response.status)
+        spec =[]
+      }
+      console.log(response);
+
       const newProject = new ProjectNames({
         userInCharge:userName,
        name:name,
         assigneeList:names,
-        specList:specs
+        specList:spec
       });
       const savedProject = await newProject.save();
       res.status(201).json({userInCharge:userName, savedProject:savedProject});
@@ -51,18 +55,31 @@ router.post('/listofprojects/', async (req, res) => {
     const {input,namesToAdd,namesToRemove,projectName,specsToAdd,specsToRemove,userName}= req.body
 
     try{
-      const oldSpecs =await ProjectNames.findOne({name:projectName})
-      if(oldSpecs.userInCharge!==userName){res.status(403).json({error:'dont have premission to edit'});return}
-      const newSpecs = [...oldSpecs.specList, ...specsToAdd].filter((spec)=>!specsToRemove.some(
+      const project =await ProjectNames.findOne({name:projectName})
+
+      if(project.userInCharge!==userName){res.status(403).json({error:'dont have premission to edit'});return}
+
+      const newSpecs = [...project.specList, ...specsToAdd].filter((spec)=>!specsToRemove.some(
         (spec1)=> spec1._id === spec._id))
-      const oldNmaes =await ProjectNames.findOne({name:projectName})
-      const newnames = [...oldNmaes.assigneeList, ...namesToAdd].filter((name)=>!namesToRemove.some(
-        (person)=> person.pic === name.pic && person.name === name.name
+
+      const newnames = [...project.assigneeList, ...namesToAdd].filter((name)=>!namesToRemove.some(
+        (person)=> person.userName===name.userName
       ))
+      let specPush = newSpecs
+      const specList = specsToAdd.map((spec)=>spec._id)
+      const response = await axios.put('https://jlm-specs-2-server.vercel.app/project/link-board',{specId:specList ,
+      boardName:projectName})
+      if (response.status!=200) {
+        res.status(500).send('server error: cannot connect specs - ',response.data)
+        spec =[]
+      }
+      console.log('spec responese:',response.data);
+
+
   const updatedBoard = await ProjectNames.findOneAndUpdate(
   { name:projectName},
-  input!==''?{ $set: { specList:newSpecs,assigneeList:newnames ,name:input} }:
-  { $set: { specList:newSpecs,assigneeList:newnames} },
+  input!==''?{ $set: { specList:specPush,assigneeList:newnames ,name:input} }:
+  { $set: { specList:specPush,assigneeList:newnames} },
   { new: true } )
 
   if(input!==''){
@@ -109,7 +126,8 @@ router.get('/allNames', async (req,res)=>{
     // invalid link
   const response =  await axios.get('http://infra-jerusalem-2-server.vercel.app/allUsersNameImg')
  const data = response.data
-      res.send(data)
+ const listNames = data.filter((person)=>person.userName)
+      res.send(listNames)
     }
     // delete when the link to infra fix
     catch(err){console.log('error getting names:',err.status);res.send([{
@@ -122,18 +140,18 @@ router.get('/allNames', async (req,res)=>{
 
 
 router.get('/names/:projectName',async (req,res)=>{
-  const projName = req.params.projectName
+  const {projectName} = req.params
   try{
-  const response = await ProjectNames.findOne({name:projName})
+  const response = await ProjectNames.findOne({name:projectName})
   res.send(response.assigneeList)
   }catch(err){console.log('error while trying to get names ',(err));
 res.status(500).json({err:'interval server error',details:err.message})}
 })
 
 router.get('/specs/:projectName',async (req,res)=>{
-  const projName = req.params.projectName
+  const {projectName} = req.params
   try{
-  const response = await ProjectNames.findOne({name:projName})
+  const response = await ProjectNames.findOne({name:projectName})
   res.send(response.specList)
   }catch(err){console.log('error while trying to get names ',(err));
 res.status(500).json({err:'interval server error',details:err.message})}
