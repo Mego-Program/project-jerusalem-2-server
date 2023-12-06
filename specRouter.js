@@ -22,28 +22,9 @@ specRouter.get('/getspecs',async(req,res)=>{
   }catch(err){console.log('error try to get names of specs:',err);}
 })
 
-specRouter.post('/:projectname',async(req,res)=>{
-  const {projectname} = req.params
-  const newMission = req.body
-  for (const key in obj) {
-    if (obj[key] !== undefined && obj[key] !== null && obj[key] !== '') {break}
-    res.send('invalid message');return 
-  }
-  if(projectname==='no project found'){res.send('create project first')}{
-  newMission['projectName']=projectname
-  newMission['assignee']={name:'',pic:''}
-  newMission['isSpec']=true
-try{
-   const mission = new Project(newMission)
-   const savedMission = await mission.save();
 
-    res.json(savedMission);
-  } catch (error) {
-    console.error('Error adding mission:', error);
-    res.status(500).json({ error: 'Internal Server Error', details: error.message });
-  }}
-
-})
+// request to connect new spec and add tasks 
+// ***add boolean argument if spec already connected and only add tasks *******
 
 specRouter.put('/connectSpecs',async(req,res)=>{
   const {boardName,spec,tasks} = req.body
@@ -66,7 +47,7 @@ tasks.map(async (task)=>{
   newTask.projectName =boardName
   newTask.isSpec = true
   newTask.status = 'Not Started'
-  const saveTask = await newTask.save()
+  await newTask.save()
   responese['add'] = 'add tasks success'
   res.status(200).json(responese)
 })
@@ -74,7 +55,21 @@ tasks.map(async (task)=>{
   }catch(err){res.send('error try edit spec connecting:',err)}
 })
 
+specRouter.delete('/',async(req,res)=>{
+  const {boardName,specId} = req.body
+  try{
+  const missionToDelete = await Project.find({ projectName: boardName,isSpec:true});
+  const projectToDisconnect = await ProjectNames.findOne({name:boardName})
+const newList = projectToDisconnect.specList.filter((spec)=>spec._id!==specId)
+await projectToDisconnect.updateOne({$set:{specList:newList}})
+  missionToDelete.map((massion)=>massion.deleteOne())
 
+  return res.status(200).json({ message: 'Mission deleted successfully.' });
+} catch (error) {
+  console.error(error);
+  return res.status(500).json({ error: 'Internal Server Error.' });
+}
+})
 
 
 
