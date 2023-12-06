@@ -7,8 +7,7 @@ const specRouter = express.Router();
 specRouter.get('/listofprojects/', async (req, res) => {
   try {
     const list = await ProjectNames.find()
-    const userList = list.filter((itm)=>itm.assigneeList.some((user)=>user.name===userName))
-    res.send(userList.map((itm)=>itm.name))
+    res.send(list.map((itm)=>itm.name))
   }catch (error) {
     console.log('Error getting list of project names:', error);
     res.status(500).json({ error: 'Internal Server Error', details: error.message });
