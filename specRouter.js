@@ -59,6 +59,7 @@ specRouter.put('/connectSpecs',async(req,res)=>{
   responese['connect'] = 'connect spec success'
 tasks.map(async (task)=>{
   const newTask = new  Project(task)
+  newTask.projectName =boardName
   newTask.isSpec = true
   const saveTask = await newTask.save()
   responese['add'] = 'add tasks success'
