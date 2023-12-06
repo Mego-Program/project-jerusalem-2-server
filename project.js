@@ -8,7 +8,9 @@ const projectSchema = new mongoose.Schema({
   status: { type: String, default: '' },
   category: { type: String, default: '' },
   assignee: {
-    name: { type: String, default: '' },
+    userName:{type:String,default:''},
+    firstName: { type: String, default: '' },
+   lastName: { type: String, default: '' },
     pic: { type: String, default: '' }
   },
   milestone: { type: String, default: '' },

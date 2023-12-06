@@ -59,8 +59,13 @@ specRouter.put('/connectSpecs',async(req,res)=>{
   responese['connect'] = 'connect spec success'
 tasks.map(async (task)=>{
   const newTask = new  Project(task)
+  if(newTask.deadline!==''){
+  const date = new Date(inputDate);
+  const options = { year: 'numeric', month: 'long', day: 'numeric' };
+  newTask.deadline = date.toLocaleDateString('en-US', options);}
   newTask.projectName =boardName
   newTask.isSpec = true
+  newTask.status = 'Not Started'
   const saveTask = await newTask.save()
   responese['add'] = 'add tasks success'
   res.status(200).json(responese)
