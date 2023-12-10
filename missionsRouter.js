@@ -1,6 +1,7 @@
 import express  from 'express';
 import Project from './project.js';
 import ProjectNames from './listProjects.js';
+import axios from 'axios';
 
 
 const missionRouter = express.Router();
@@ -81,7 +82,11 @@ missionRouter.delete('/:projectname',async(req,res)=>{
     if (!missionToDelete) {
       return res.status(404).json({ error: 'Mission not found.' });
     }
+    if(missionToDelete.isSpec){
+     const responese = axios.delete('',{data:{id:missionToDelete._id,boardNmae:missionToDelete.projectName}})
+    }
     await missionToDelete.deleteOne();
+
     return res.status(200).json({ message: 'Mission deleted successfully.' });
   } catch (error) {
     console.error(error);
