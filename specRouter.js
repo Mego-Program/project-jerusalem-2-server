@@ -27,20 +27,21 @@ specRouter.get('/getspecs',async(req,res)=>{
 // ***add boolean argument if spec already connected and only add tasks *******
 
 specRouter.put('/connectSpecs',async(req,res)=>{
-  const {boardName,spec,tasks} = req.body
+  const {boardName,spec,tasks,newSpec} = req.body
   const responese = {}
   try{
     const project = await ProjectNames.findOne({name:boardName})
     if(!project){res.status(403).send('project not found')}
+    if(newSpec){
    const updateProject = await ProjectNames.findOneAndUpdate(
     {name:boardName},
     {$push:{specList:spec}},
     {new:true}
   )
-  responese['connect'] = 'connect spec success'
+  responese['connect'] = 'connect spec success'}
 tasks.map(async (task)=>{
   const newTask = new  Project(task)
-  if(newTask.deadline!==''){
+  if(newTask.deadline&&newTask.deadline!==''){
   const date = new Date(inputDate);
   const options = { year: 'numeric', month: 'long', day: 'numeric' };
   newTask.deadline = date.toLocaleDateString('en-US', options);}
