@@ -41,8 +41,8 @@ specRouter.put('/connectSpecs',async(req,res)=>{
   responese['connect'] = 'connect spec success'}
 tasks.map(async (task)=>{
   const newTask = new  Project(task)
-  if(newTask.deadline&&newTask.deadline!==''){
-  const date = new Date(inputDate);
+  if(task.deadline&&task.deadline!==''){
+  const date = new Date(task.deadline);
   const options = { year: 'numeric', month: 'long', day: 'numeric' };
   newTask.deadline = date.toLocaleDateString('en-US', options);}
   newTask.projectName =boardName
@@ -50,7 +50,7 @@ tasks.map(async (task)=>{
   newTask.status = 'Not Started'
   await newTask.save()
   responese['add'] = 'add tasks success'
-  res.status(200).json(responese)
+  res.status(200).json(responese.data)
 })
 
   }catch(err){res.send('error try edit spec connecting:',err)}
@@ -58,17 +58,19 @@ tasks.map(async (task)=>{
 
 specRouter.delete('/',async(req,res)=>{
   const {boardName,specId} = req.body
+  let massage = ''
   try{
   const missionToDelete = await Project.find({ projectName: boardName,isSpec:true});
+  if(!missionToDelete){massage+'1:no mission found'}
   const projectToDisconnect = await ProjectNames.findOne({name:boardName})
+  if(!projectToDisconnect){massage+'2:no project found'}
 const newList = projectToDisconnect.specList.filter((spec)=>spec._id!==specId)
 await projectToDisconnect.updateOne({$set:{specList:newList}})
-  missionToDelete.map((massion)=>massion.deleteOne())
-
+  missionToDelete.map(async(massion)=> await massion.deleteOne())
   return res.status(200).json({ message: 'Mission deleted successfully.' });
 } catch (error) {
   console.error(error);
-  return res.status(500).json({ error: 'Internal Server Error.' });
+  return res.status(500).json({ error: 'Internal Server Error.' ,massage:massage});
 }
 })
 
