@@ -11,7 +11,11 @@ missionRouter.get('/:projectName', async (req, res) => {
     const { projectName } = req.params;
   
     try {
-          const query = await Project.find({ projectName: projectName });
+        const sprint = await ProjectNames.findOne({name:projectName})
+        let query=null
+        if (sprint.isSprint){  query = await Project.find({ projectName: sprint.isSprint,isSprint:true });}
+        else{
+          query = await Project.find({ projectName: projectName });}
           if (!query) {
             res.send('No project found');
           } else {

@@ -6,6 +6,7 @@ import dotenv from 'dotenv';
 import projectRouter from './projectRouter.js'; 
 import missionRouter from './missionsRouter.js';
 import specRouter from './specRouter.js';
+import sprRouter from './sprintRouter.js';
 
 dotenv.config();
 console.log(process.env.PORT);
@@ -22,6 +23,7 @@ app.use(express.json());
 app.use('/spec', specRouter);
 app.use('/missions',missionRouter)
 app.use('/projects', projectRouter);
+app.use('/sprints',sprRouter)
 
 mongoose.connect(process.env.MONGO_URI, {
   useNewUrlParser: true,
