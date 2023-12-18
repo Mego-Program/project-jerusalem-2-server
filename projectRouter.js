@@ -157,6 +157,15 @@ router.get('/specs/:projectName',async (req,res)=>{
 res.status(500).json({err:'interval server error',details:err.message})}
 })
 
+router.get('/projectsdetailes/:projectname',async(req,res)=>{
+  try{
+  const projectname = req.params.projectname
+  const detailes = await ProjectNames.findOne({name:projectname,isSprint:true})
+  if(detailes){
+  res.json(detailes)}}
+  catch(e){console.log('try find project detailes:',e);}
+})
+
 
 router.get('/username',async(req,res)=>{
   let userName = null
