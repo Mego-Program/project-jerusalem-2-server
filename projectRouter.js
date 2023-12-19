@@ -100,6 +100,11 @@ router.post('/listofprojects/', async (req, res) => {
   
   if(missionsToDelete.length>0&&projectToDelete){
     try{
+      projectToDelete.specList.map(async(spec)=>{
+      const response = await axios.put('https://jlm-specs-2-server.vercel.app/project/link-board',{specId:spec.id ,
+      boardName:''})
+      console.log('spec response:',response.data);
+      })
       await projectToDelete.deleteOne()
   
      missionsToDelete.map(async(mission)=> {await mission.deleteOne()})
