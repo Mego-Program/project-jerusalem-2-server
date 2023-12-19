@@ -83,7 +83,7 @@ router.put("/", async (req, res) => {
     specsToRemove,
     userName,
   } = req.body;
-console.log(req.body);
+
   try {
     const project = await ProjectNames.findOne({ name: projectName });
 
