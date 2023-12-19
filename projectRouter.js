@@ -24,19 +24,21 @@ router.post('/listofprojects/', async (req, res) => {
 
   router.post('/', async (req, res) => {
     const { name, names,specs ,userName} = req.body
+    console.log(req.body);
     let spec = specs
-    const specList = specs.map((spec)=>spec._id)
+    const specList = specs.map((spec)=>spec.id)
     if (name===''){res.send('cant create empty name');return}
    else if (!userName) {res.status(403).send({ auth: false, message: 'No token provided.' });return}
     try{
+      try{
       const response = await axios.put('https://jlm-specs-2-server.vercel.app/project/link-board',{specId:specList ,
       boardName:name})
       if (response.status!=200) {
         res.status(500).send('server error: cannot connect specs - ',response.status)
         spec =[]
       }
-      console.log(response);
-
+      console.log(response.data);
+    }catch(e){console.log('error connect to spec:',e);}
       const newProject = new ProjectNames({
         userInCharge:userName,
        name:name,
@@ -60,20 +62,21 @@ router.post('/listofprojects/', async (req, res) => {
       if(project.userInCharge!==userName){res.status(403).json({error:'dont have premission to edit'});return}
 
       const newSpecs = [...project.specList, ...specsToAdd].filter((spec)=>!specsToRemove.some(
-        (spec1)=> spec1._id === spec._id))
+        (spec1)=> spec1.id === spec.id))
 
       const newnames = [...project.assigneeList, ...namesToAdd].filter((name)=>!namesToRemove.some(
         (person)=> person.userName===name.userName
       ))
       let specPush = newSpecs
       const specList = specsToAdd.map((spec)=>spec._id)
+      try{
       const response = await axios.put('https://jlm-specs-2-server.vercel.app/project/link-board',{specId:specList ,
       boardName:projectName})
       if (response.status!=200) {
         res.status(500).send('server error: cannot connect specs - ',response.data)
         spec =[]
       }
-      console.log('spec responese:',response.data);
+      console.log('spec responese:',response.data);}catch(e){console.log('error connect spec:',e);}
 
 
   const updatedBoard = await ProjectNames.findOneAndUpdate(
