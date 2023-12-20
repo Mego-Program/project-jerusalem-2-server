@@ -15,7 +15,8 @@ const projectSchema = new mongoose.Schema({
   },
   milestone: { type: String, default: '' },
   issue_type: { type: String, default: '' },
-  isSprint:{type:Boolean,default:false}
+  isSprint:{type:String,default:false}
+  
 });
 
 const Project = mongoose.model('allmissions', projectSchema);
