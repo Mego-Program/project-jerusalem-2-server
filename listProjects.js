@@ -5,8 +5,9 @@ const projectSchema = new mongoose.Schema({
     name:String,
     assigneeList:Array,
     specList:Array,
-    isSprint:{type:String,default:''},
+    sprint:{type:Array,default:[]},
     deadLine:String
+
 })
 
 const ProjectNames = mongoose.model('projectsnames', projectSchema)
