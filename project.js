@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 const projectSchema = new mongoose.Schema({
-  isSpec: { type: Boolean, default: false }, 
+  isSpec: { type: Boolean, default: false },
+  specId:{type:String,default:''} ,
   projectName: { type: String, require:true },
   header: { type: String, require:true},
   content: { type: String, require:true},
