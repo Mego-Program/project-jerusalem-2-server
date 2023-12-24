@@ -12,10 +12,20 @@ dotenv.config();
 console.log(process.env.PORT);
 const app = express();
 const PORT = process.env.PORT || 3000;
-app.use(cors({
+// app.use(cors({
 
-  origin: ['https://project-jerusalem-2.vercel.app','http://localhost:5173',
-  "http://localhost:4173","https://jlm-specs-2.vercel.app",'https://infra-jerusalem-2.vercel.app/'],  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+//   origin: ['https://project-jerusalem-2.vercel.app','http://localhost:5173',
+//   "http://localhost:4173","https://jlm-specs-2.vercel.app",'https://infra-jerusalem-2.vercel.app/'],  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+// }));
+app.use(cors({
+  origin: [
+    'https://project-jerusalem-2.vercel.app',
+    'http://localhost:5173',
+    'http://localhost:4173',
+    'https://jlm-specs-2.vercel.app',
+    'https://infra-jerusalem-2.vercel.app'
+  ],
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
 }));
 
 
