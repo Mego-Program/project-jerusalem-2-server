@@ -28,8 +28,6 @@ specRouter.get("/getspecs", async (req, res) => {
   }
 });
 
-// request to connect new spec and add tasks
-// ***add boolean argument if spec already connected and only add tasks *******
 
 specRouter.put("/connectSpecs", async (req, res) => {
   const { boardName, spec, tasks, newSpec } = req.body;
@@ -55,6 +53,7 @@ specRouter.put("/connectSpecs", async (req, res) => {
         newTask.deadline = date.toLocaleDateString("en-US", options);
       }
       newTask.projectName = boardName;
+      newTask.specId = spec.id
       newTask.isSpec = true;
       newTask.status = "Not Started";
       await newTask.save();
@@ -73,6 +72,7 @@ specRouter.delete("/", async (req, res) => {
     const missionToDelete = await Project.find({
       projectName: boardName,
       isSpec: true,
+      specId:specId
     });
     if (!missionToDelete) {
       massage + "1:no mission found";
@@ -82,7 +82,7 @@ specRouter.delete("/", async (req, res) => {
       massage + "2:no project found";
     }
     const newList = projectToDisconnect.specList.filter(
-      (spec) => spec._id !== specId
+      (spec) => spec.id !== specId
     );
     await projectToDisconnect.updateOne({ $set: { specList: newList } });
     missionToDelete.map(async (massion) => await massion.deleteOne());
