@@ -13,7 +13,7 @@ missionRouter.get('/:projectName', async (req, res) => {
     try {
         const project = await ProjectNames.findOne({name:projectName})
         if (!project) {
-          res.send('No project found');
+          res.send([]);
           } else {
             const query = await Project.find({ projectName: projectName });
             res.send(query);

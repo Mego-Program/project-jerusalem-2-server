@@ -24,6 +24,7 @@ if(projectName==='no project found'){return}
 
 try{
   const project = await ProjectNames.findOne({name:projectName})
+  if(!project){res.send([]);return}
 
   res.send(project.sprint)
 

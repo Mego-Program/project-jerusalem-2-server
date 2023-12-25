@@ -231,6 +231,7 @@ router.get("/names/:projectName", async (req, res) => {
   const { projectName } = req.params;
   try {
     const response = await ProjectNames.findOne({ name: projectName });
+    if(!response){res.send([]);return}
     res.send(response.assigneeList);
   } catch (err) {
     console.log("error while trying to get names ", err);
@@ -244,6 +245,7 @@ router.get("/specs/:projectName", async (req, res) => {
   const { projectName } = req.params;
   try {
     const response = await ProjectNames.findOne({ name: projectName });
+    if(!response){res.send([]);return}
     res.send(response.specList);
   } catch (err) {
     console.log("error while trying to get specs ", err);
@@ -272,18 +274,21 @@ router.get("/username", async (req, res) => {
   let userName = null;
   try {
     const token = req.headers.authorization;
-    if (!token) {
+  
+      if (!token) {
       res.status(403).send({ auth: false, message: "No token provided." });
       return;
     }
     jwt.verify(token, process.env.TOKEN_KEY, (err, decoded) => {
       if (err) {
-        res
+      console.log('error verify token')
+  res
           .status(500)
           .send({ auth: false, message: "Failed to authenticate token." });
         return;
       }
       userName = decoded.name;
+    
     });
     if (!userName) {
       res.status(403).send('error no user recognise')
