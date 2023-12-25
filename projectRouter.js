@@ -174,7 +174,6 @@ router.delete("/", async (req, res) => {
           "https://jlm-specs-2-server.vercel.app/project/link-board",
           { specId: projectToDelete.specList, boardName: null }
         );
-        console.log();
         console.log("spec response:", response.data);
       } catch (e) {
         console.log("error try delete spec connection");
@@ -205,10 +204,8 @@ router.delete("/", async (req, res) => {
   }
 });
 
-// change it to get real names from infra
 router.get("/allNames", async (req, res) => {
   try {
-    // invalid link
     const response = await axios.get(
       "http://infra-jerusalem-2-server.vercel.app/allUsersNameImg"
     );
@@ -216,17 +213,8 @@ router.get("/allNames", async (req, res) => {
     const listNames = data.filter((person) => person.userName);
     res.send(listNames);
   } catch (err) {
-    // delete when the link to infra fix
     console.log("error getting names:", err.status);
-    res.send([
-      {
-        name: "Lily",
-        pic: "",
-      },
-      { name: "Peter", pic: "" },
-      { name: "Grace", pic: "" },
-      { name: "Alice", pic: "" },
-    ]);
+  res.status(500).send('error try get users names')
   }
 });
 
@@ -286,10 +274,12 @@ router.get("/username", async (req, res) => {
           .send({ auth: false, message: "Failed to authenticate token." });
         return;
       }
-      userName = decoded.userName;
+      userName = decoded.name;
     });
     if (!userName) {
+      res.status(403).send('error no user recognise')
       return;
+      
     }
     res.send(userName);
   } catch (error) {
