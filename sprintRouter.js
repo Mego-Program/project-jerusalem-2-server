@@ -20,6 +20,7 @@ sprRouter.get('/getdate/:sprintName/:projectName',async(req,res)=>{
 
 sprRouter.get('/:projectName',async(req,res)=>{
 const {projectName} = req.params
+if(projectName==='no project found'){return}
 
 try{
   const project = await ProjectNames.findOne({name:projectName})

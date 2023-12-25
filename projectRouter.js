@@ -1,7 +1,7 @@
 import express from "express";
 import Project from "./project.js";
 import ProjectNames from "./listProjects.js";
-import jwt from "jsonwebtoken";
+import jwt, { decode } from "jsonwebtoken";
 import axios from "axios";
 
 const router = express.Router();
@@ -29,6 +29,10 @@ router.post("/listofprojects/", async (req, res) => {
 
 router.post("/", async (req, res) => {
   const { name, names, specs, userName } = req.body;
+  try{
+const exist = await ProjectNames.findOne({name:name})
+if(exist){console.log('name already exist');res.status(403).send('name already exist');return}
+  }catch(e){console.log('error try validate project name');res.status(500)}
   let spec = specs;
   const specList = specs.map((spec) => spec._id);
   if (name === "") {
@@ -83,6 +87,11 @@ router.put("/", async (req, res) => {
     specsToRemove,
     userName,
   } = req.body;
+
+  try{
+  const exist = await ProjectNames.findOne({name:input})
+  if(exist){console.log('name already exist');res.status(403).send('name already exist');return}
+    }catch(e){console.log('error try validate project name');res.status(500)}
 
   try {
     const project = await ProjectNames.findOne({ name: projectName });
@@ -237,7 +246,7 @@ router.get("/specs/:projectName", async (req, res) => {
     const response = await ProjectNames.findOne({ name: projectName });
     res.send(response.specList);
   } catch (err) {
-    console.log("error while trying to get names ", err);
+    console.log("error while trying to get specs ", err);
     res
       .status(500)
       .json({ err: "interval server error", details: err.message });
