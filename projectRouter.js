@@ -172,7 +172,7 @@ router.delete("/", async (req, res) => {
       try {
         const response = await axios.put(
           "https://jlm-specs-2-server.vercel.app/project/link-board",
-          { specId: projectToDelete.specList, boardName: "" }
+          { specId: projectToDelete.specList, boardName: null }
         );
         console.log();
         console.log("spec response:", response.data);
