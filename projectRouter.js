@@ -1,7 +1,7 @@
 import express from "express";
 import Project from "./project.js";
 import ProjectNames from "./listProjects.js";
-import jwt from "jsonwebtoken";
+import jwt, { decode } from "jsonwebtoken";
 import axios from "axios";
 
 const router = express.Router();
@@ -29,6 +29,10 @@ router.post("/listofprojects/", async (req, res) => {
 
 router.post("/", async (req, res) => {
   const { name, names, specs, userName } = req.body;
+  try{
+const exist = await ProjectNames.findOne({name:name})
+if(exist){console.log('name already exist');res.status(403).send('name already exist');return}
+  }catch(e){console.log('error try validate project name');res.status(500)}
   let spec = specs;
   const specList = specs.map((spec) => spec._id);
   if (name === "") {
@@ -83,6 +87,11 @@ router.put("/", async (req, res) => {
     specsToRemove,
     userName,
   } = req.body;
+
+  try{
+  const exist = await ProjectNames.findOne({name:input})
+  if(exist){console.log('name already exist');res.status(403).send('name already exist');return}
+    }catch(e){console.log('error try validate project name');res.status(500)}
 
   try {
     const project = await ProjectNames.findOne({ name: projectName });
@@ -174,7 +183,6 @@ router.delete("/", async (req, res) => {
           "https://jlm-specs-2-server.vercel.app/project/link-board",
           { specId: projectToDelete.specList, boardName: null }
         );
-        console.log();
         console.log("spec response:", response.data);
       } catch (e) {
         console.log("error try delete spec connection");
@@ -205,10 +213,8 @@ router.delete("/", async (req, res) => {
   }
 });
 
-// change it to get real names from infra
 router.get("/allNames", async (req, res) => {
   try {
-    // invalid link
     const response = await axios.get(
       "http://infra-jerusalem-2-server.vercel.app/allUsersNameImg"
     );
@@ -216,17 +222,8 @@ router.get("/allNames", async (req, res) => {
     const listNames = data.filter((person) => person.userName);
     res.send(listNames);
   } catch (err) {
-    // delete when the link to infra fix
     console.log("error getting names:", err.status);
-    res.send([
-      {
-        name: "Lily",
-        pic: "",
-      },
-      { name: "Peter", pic: "" },
-      { name: "Grace", pic: "" },
-      { name: "Alice", pic: "" },
-    ]);
+  res.status(500).send('error try get users names')
   }
 });
 
@@ -249,7 +246,7 @@ router.get("/specs/:projectName", async (req, res) => {
     const response = await ProjectNames.findOne({ name: projectName });
     res.send(response.specList);
   } catch (err) {
-    console.log("error while trying to get names ", err);
+    console.log("error while trying to get specs ", err);
     res
       .status(500)
       .json({ err: "interval server error", details: err.message });
@@ -286,10 +283,12 @@ router.get("/username", async (req, res) => {
           .send({ auth: false, message: "Failed to authenticate token." });
         return;
       }
-      userName = decoded.userName;
+      userName = decoded.name;
     });
     if (!userName) {
+      res.status(403).send('error no user recognise')
       return;
+      
     }
     res.send(userName);
   } catch (error) {

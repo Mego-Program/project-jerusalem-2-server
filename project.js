@@ -12,7 +12,7 @@ const projectSchema = new mongoose.Schema({
     userName:{type:String,default:''},
     firstName: { type: String, default: '' },
    lastName: { type: String, default: '' },
-    pic: { type: String, default: '' }
+    img: { type: String, default: '' }
   },
   milestone: { type: String, default: '' },
   issue_type: { type: String, default: '' },
