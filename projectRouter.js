@@ -15,7 +15,7 @@ router.post("/listofprojects/", async (req, res) => {
     const list = await ProjectNames.find();
     const userList = list.filter(
       (itm) =>
-        itm.assigneeList.some((user) => user.name === userName) ||
+        itm.assigneeList.some((user) => user.userName === userName) ||
         itm.userInCharge === userName
     );
     res.send(userList.map((itm) => itm.name));
