@@ -7,6 +7,7 @@ import projectRouter from './projectRouter.js';
 import missionRouter from './missionsRouter.js';
 import specRouter from './specRouter.js';
 import sprRouter from './sprintRouter.js';
+import deshRouter from './dashBoard.js';
 
 
 dotenv.config();
@@ -21,6 +22,7 @@ app.use(cors({
 
 
 app.use(express.json());
+app.use('/desh',deshRouter)
 app.use('/spec', specRouter);
 app.use('/missions',missionRouter)
 app.use('/projects', projectRouter);
