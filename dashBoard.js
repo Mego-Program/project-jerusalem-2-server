@@ -6,6 +6,7 @@ const deshRouter = express.Router();
 
 deshRouter.get('/tasks',async(req,res)=>{
     const userName = req.headers.authorization
+    if(!userName){res.status(500).send('no user name found');return}
     try{
         const listTasks = await Project.find({'assignee.userName':userName})
         const responseObject = {
@@ -27,7 +28,7 @@ deshRouter.get('/tasks',async(req,res)=>{
             }
           });
       
-          res.json(responseObject);
+          res.status(200).json(responseObject);
         } catch (error) {
           console.error('Error retrieving tasks:', error);
           res.status(500).json({ error: 'Internal Server Error' });
