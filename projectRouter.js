@@ -18,7 +18,7 @@ router.post("/listofprojects/", async (req, res) => {
         itm.assigneeList.some((user) => user.userName === userName) ||
         itm.userInCharge === userName
     );
-    res.send(userList.map((itm) => itm.name));
+    res.send(userList.map((itm) => itm.name));return
   } catch (error) {
     console.log("Error getting list of project names:", error);
     res
@@ -279,12 +279,13 @@ router.get("/username", async (req, res) => {
       res.status(403).send({ auth: false, message: "No token provided." });
       return;
     }
+    console.log(token);
     jwt.verify(token, process.env.TOKEN_KEY, (err, decoded) => {
       if (err) {
-      console.log('error verify token')
-  res
-          .status(500)
-          .send({ auth: false, message: "Failed to authenticate token." });
+      console.log('error verify token:',err)
+  // res
+  //         .status(500)
+  //         .send({ auth: false, message: "Failed to authenticate token." });
         return;
       }
       userName = decoded.name;
