@@ -5,7 +5,8 @@ import ProjectNames from "./listProjects.js";
 const deshRouter = express.Router();
 
 deshRouter.get('/tasks',async(req,res)=>{
-    const userName = req.headers.authorization
+    const  enecodeName= req.headers.authorization
+    const userName = decodeURIComponent(Buffer.from(enecodeName,"base64").toString())
     if(!userName){res.status(500).send('no user name found');return}
     try{
         const listTasks = await Project.find({'assignee.userName':userName})
