@@ -2,11 +2,12 @@ import express, { query } from "express";
 import Project from "./project.js";
 import ProjectNames from "./listProjects.js";
 
+
 const deshRouter = express.Router();
 
 deshRouter.get('/tasks',async(req,res)=>{
     const  enecodeName= req.headers.authorization
-    const userName = decodeURIComponent(Buffer.from(enecodeName,"base64").toString())
+    const userName = decodeURIComponent(atob(enecodeName))
     if(!userName){res.status(500).send('no user name found');return}
     try{
         const listTasks = await Project.find({'assignee.userName':userName})
