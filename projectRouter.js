@@ -279,13 +279,10 @@ router.get("/username", async (req, res) => {
       res.status(403).send({ auth: false, message: "No token provided." });
       return;
     }
-    console.log(token);
     jwt.verify(token, process.env.TOKEN_KEY, (err, decoded) => {
       if (err) {
       console.log('error verify token:',err)
-  // res
-  //         .status(500)
-  //         .send({ auth: false, message: "Failed to authenticate token." });
+
         return;
       }
       userName = decoded.name;
